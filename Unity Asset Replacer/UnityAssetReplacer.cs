@@ -46,9 +46,9 @@ namespace Unity_Asset_Replacer {
                 var baseField = _assetsManager.GetTypeInstance(_assetsFile.file, assetInfo).GetBaseField();
 
                 // Read from input file
-                const int maxFileSize = 999999; // Change this if asset is too large for the byte buffer
+                var maxFileSize = new FileInfo(inputFilePath).Length; // Change this if asset is too large for the byte buffer
                 var inBytes = new byte[maxFileSize];
-                File.Open(inputFilePath, FileMode.Open).Read(inBytes, 0, maxFileSize);
+                File.Open(inputFilePath, FileMode.Open).Read(inBytes, 0, Convert.ToInt32(maxFileSize));
 
                 // Get member to replace
                 var member = baseField.Get(_memberName).GetValue();
