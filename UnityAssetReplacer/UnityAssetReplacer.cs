@@ -6,7 +6,7 @@ using System.Text;
 using AssetsTools.NET;
 using AssetsTools.NET.Extra;
 
-namespace Unity_Asset_Replacer {
+namespace UnityAssetReplacer {
     public class UnityAssetReplacer {
         // Global arguments
         private readonly string _memberName;
@@ -46,7 +46,7 @@ namespace Unity_Asset_Replacer {
                 var baseField = _assetsManager.GetTypeInstance(_assetsFile.file, assetInfo).GetBaseField();
 
                 // Read from input file
-                var maxFileSize = new FileInfo(inputFilePath).Length; // Change this if asset is too large for the byte buffer
+                var maxFileSize = new FileInfo(inputFilePath).Length;
                 var inBytes = new byte[maxFileSize];
                 File.Open(inputFilePath, FileMode.Open).Read(inBytes, 0, Convert.ToInt32(maxFileSize));
 

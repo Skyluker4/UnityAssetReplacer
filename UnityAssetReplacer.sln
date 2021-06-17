@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31229.75
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Unity Asset Replacer", "Unity Asset Replacer\Unity Asset Replacer.csproj", "{F128FDC3-975C-4D1D-B258-9CDE2A80C92D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnityAssetReplacer", "UnityAssetReplacer\UnityAssetReplacer.csproj", "{F128FDC3-975C-4D1D-B258-9CDE2A80C92D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

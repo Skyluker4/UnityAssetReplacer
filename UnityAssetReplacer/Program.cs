@@ -1,7 +1,7 @@
 ﻿using System;
 using Mono.Options;
 
-namespace Unity_Asset_Replacer {
+namespace UnityAssetReplacer {
     internal static class Program {
         // Entry point
         public static void Main(string[] args) {
