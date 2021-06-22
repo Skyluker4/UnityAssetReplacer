@@ -1,0 +1,27 @@
+name: Build .NET
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  Build:
+    runs-on: ubuntu-latest    
+
+    strategy:
+      fail-fast: false
+      matrix:
+          platform: [win-x86, win-x64, linux-x64, osx-x64]
+
+    steps:
+    - name: Checkout Repository
+      uses: actions/checkout@main
+      
+    - name: Setup .NET
+      uses: actions/setup-dotnet@main
+      with:
+        dotnet-version: 5.0.x
+      
+    - name: Build
+      working-directory: UnityAssetReplacer/
+      run: dotnet build -c Release -r ${{matrix.platform}}
