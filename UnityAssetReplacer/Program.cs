@@ -14,7 +14,7 @@ namespace UnityAssetReplacer {
             var help = false;
 
             // Instructions
-            var options = new OptionSet() {
+            var options = new OptionSet {
                 {
                     "b|bundle=", "the original asset {BUNDLE} path",
                     v => inputAssetBundlePath = v
@@ -65,7 +65,8 @@ namespace UnityAssetReplacer {
                 // If nothing can be run, display help message and exit
                 if (!(dump || replace)) {
                     Console.Error.WriteLine("To DUMP, the BUNDLE, MEMBER, and DUMP arguments must be specified.");
-                    Console.Error.WriteLine("To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
+                    Console.Error.WriteLine(
+                        "To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
                     Help();
                     return;
                 }
@@ -74,14 +75,11 @@ namespace UnityAssetReplacer {
                 var uar = new UnityAssetReplacer(inputAssetBundlePath, member);
 
                 // Dump if arguments are provided
-                if (dump) {
-                    uar.DumpAssets(dumpPath);
-                }
+                if (dump) uar.DumpAssets(dumpPath);
 
                 // Replace
-                if (inputDirectory != null && outputAssetBundlePath != null) {
+                if (inputDirectory != null && outputAssetBundlePath != null)
                     uar.ReplaceAssets(inputDirectory, outputAssetBundlePath);
-                }
             }
             else {
                 Console.Error.WriteLine("An asset BUNDLE and a MEMBER must be specified.");
