@@ -32,7 +32,7 @@
     <PackageId>UnityAssetReplacer</PackageId>
     <Authors>Luke Simmons</Authors>
     <PackageTags>C#, Unity, Asset Bundle, Asset Bundles, Asset Bundling, Reverse Engineering, Extract, Extractor, Extraction, Extract Data, .NET, .NET Core, .NET 5</PackageTags>
-    <PackageReleaseNotes>- Add support for interacting with binary files</PackageReleaseNotes>
+    <PackageReleaseNotes>- Creates an output directory for dumping if it does not exist yet</PackageReleaseNotes>
     <RootNamespace>UnityAssetReplacer</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>../LICENSE</PackageLicenseFile>

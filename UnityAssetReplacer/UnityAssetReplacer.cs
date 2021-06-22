@@ -94,6 +94,9 @@ namespace UnityAssetReplacer {
 
         // Method to dump bytes to a specified path from assets in an asset file with a given member name
         public void DumpAssets(string dumpPath) {
+			// Create output folder
+			Directory.CreateDirectory(dumpPath);
+
             // Loop through every asset in asset file
             foreach (var inf in _assetsTable.assetFileInfo) {
                 // Get specific asset

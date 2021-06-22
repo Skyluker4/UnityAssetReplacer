@@ -20,7 +20,7 @@ To replace/import assets, you need to specify the path where the assets to impor
 
 #### Dumping
 
-- ```-d```, ```--dump=DUMP```: the path of the directory you wish to dump the assets to. **This directory must already exist.**
+- ```-d```, ```--dump=DUMP```: the path of the directory you wish to dump the assets to.
 
 #### Replacing
 
