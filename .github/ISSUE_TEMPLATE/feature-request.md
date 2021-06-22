@@ -4,17 +4,20 @@ about: Suggest an idea
 title: "[FEATURE] "
 labels: enhancement
 assignees: Skyluker4
-
 ---
 
-**Is your feature request related to a problem? Please describe.**
-A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
+## Problem
 
-**Describe the solution you'd like**
-A clear and concise description of what you want to happen.
+_A clear and concise description of what the problem is. Ex. I'm always frustrated when ...._
 
-**Describe alternatives you've considered**
-A clear and concise description of any alternative solutions or features you've considered.
+## Solution
 
-**Additional context**
-Add any other context about the feature request here.
+_A clear and concise description of what you want to happen._
+
+## Alternatives
+
+_A clear and concise description of any alternative solutions or features you've considered._
+
+## Additional Context
+
+_Add any other context about the feature request here._
