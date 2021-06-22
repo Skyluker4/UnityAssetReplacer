@@ -47,7 +47,7 @@
     <PackageId>UnityAssetReplacer</PackageId>
     <Authors>Luke Simmons</Authors>
     <PackageTags>C#, Unity, Asset Bundle, Asset Bundles, Asset Bundling, Reverse Engineering, Extract, Extractor, Extraction, Extract Data, .NET, .NET Core, .NET 5</PackageTags>
-    <PackageReleaseNotes>- Upgrade to .NET Core (.NET Framwork 5.0)</PackageReleaseNotes>
+    <PackageReleaseNotes>- Add support for interacting with binary files</PackageReleaseNotes>
     <RootNamespace>UnityAssetReplacer</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>LICENSE</PackageLicenseFile>

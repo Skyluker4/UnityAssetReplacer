@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using AssetsTools.NET;
 using AssetsTools.NET.Extra;
 
 namespace UnityAssetReplacer {
     public class UnityAssetReplacer {
-        // Global arguments
-        private readonly string _memberName;
-
-        // Asset related member variables
-        private readonly AssetsManager _assetsManager = new AssetsManager();
         private readonly BundleFileInstance _assetsBundleFile;
         private readonly AssetsFileInstance _assetsFile;
+
+        // Asset related member variables
+        private readonly AssetsManager _assetsManager = new();
+
         private readonly AssetsFileTable _assetsTable;
+
+        // Global arguments
+        private readonly string _memberName;
 
         // Constructor
         public UnityAssetReplacer(string inputAssetBundlePath, string memberName) {
@@ -88,7 +89,7 @@ namespace UnityAssetReplacer {
 
             // Save the new output file
             var bunWriter = new AssetsFileWriter(File.OpenWrite(outputAssetBundlePath));
-            _assetsBundleFile.file.Write(bunWriter, new List<BundleReplacer>() {bundleReplacer});
+            _assetsBundleFile.file.Write(bunWriter, new List<BundleReplacer> {bundleReplacer});
         }
 
         // Method to dump bytes to a specified path from assets in an asset file with a given member name
@@ -101,25 +102,24 @@ namespace UnityAssetReplacer {
                 // Get the name of the asset
                 var assetName = baseField.Get("m_Name").GetValue().AsString();
 
-                // Read the bytes from the member
-                var memberValue = baseField.Get(_memberName).value;
+                // Read the values
+                var memberValue = baseField.Get(_memberName).GetValue();
 
                 // Check if member is null
                 if (memberValue is null) {
                     // Print error: Member wasn't found in asset
-                    Console.Error.WriteLine("ERROR: Can't read member '" + _memberName + "' in asset '" +
-                                            assetName + "'!");
+                    Console.Error.WriteLine("ERROR: Can't read member '" + _memberName + "' in asset '" + assetName +
+                                            "'!");
 
                     // Go on to next asset
                     continue;
                 }
 
-                // Output string as bytes
-                var memberString = memberValue.AsString();
-                var memberValueBytes = Encoding.UTF8.GetBytes(memberString);
+                // Output value as an array of bytes
+                var memberString = memberValue.AsStringBytes();
 
                 // Save the file
-                File.OpenWrite(dumpPath + "/" + assetName).Write(memberValueBytes, 0, memberValueBytes.Length);
+                File.WriteAllBytes(dumpPath + "/" + assetName, memberString);
             }
         }
     }
