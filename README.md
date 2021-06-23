@@ -2,6 +2,7 @@
 
 [![Build](https://github.com/Skyluker4/UnityAssetReplacer/actions/workflows/build.yml/badge.svg)](https://github.com/Skyluker4/UnityAssetReplacer/actions/workflows/build.yml)
 [![CodeQL](https://github.com/Skyluker4/UnityAssetReplacer/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/Skyluker4/UnityAssetReplacer/actions/workflows/codeql-analysis.yml)
+[![GitHub Super-Linter](https://github.com/Skyluker4/UnityAssetReplacer/workflows/Lint/badge.svg)](https://github.com/marketplace/actions/super-linter)
 
 A tool to dump or replace assets in a Unity asset bundle.
 
