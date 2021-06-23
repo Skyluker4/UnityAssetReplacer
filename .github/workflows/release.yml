@@ -51,7 +51,7 @@ jobs:
     - name: Download Packages
       uses: actions/download-artifact@main
     
-    - name: Upload Pre-release
+    - name: Upload Release
       uses: marvinpinto/action-automatic-releases@latest
       with:
           repo_token: ${{secrets.GITHUB_TOKEN}}
