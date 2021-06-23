@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+
 using AssetsTools.NET;
 using AssetsTools.NET.Extra;
 
@@ -58,7 +59,7 @@ namespace UnityAssetReplacer {
 				if (member is null) {
 					// Print error: Member wasn't found in asset
 					Console.Error.WriteLine("ERROR: Can't read member '" + _memberName + "' in asset '" +
-					                        inputFileName + "'!");
+											inputFileName + "'!");
 
 					// Go on to next asset
 					continue;
@@ -70,7 +71,7 @@ namespace UnityAssetReplacer {
 				var newGoBytes = baseField.WriteToByteArray();
 
 				// Add new replacer to list of replacers
-				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int) assetInfo.curFileType,
+				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
 					0xFFFF, newGoBytes);
 				assetReplacers.Add(assetsReplacer);
 			}
@@ -88,7 +89,7 @@ namespace UnityAssetReplacer {
 
 			// Save the new output file
 			var bunWriter = new AssetsFileWriter(File.OpenWrite(outputAssetBundlePath));
-			_assetsBundleFile.file.Write(bunWriter, new List<BundleReplacer> {bundleReplacer});
+			_assetsBundleFile.file.Write(bunWriter, new List<BundleReplacer> { bundleReplacer });
 		}
 
 		// Method to dump bytes to a specified path from assets in an asset file with a given member name
@@ -111,7 +112,7 @@ namespace UnityAssetReplacer {
 				if (memberValue is null) {
 					// Print error: Member wasn't found in asset
 					Console.Error.WriteLine("ERROR: Can't read member '" + _memberName + "' in asset '" + assetName +
-					                        "'!");
+											"'!");
 
 					// Go on to next asset
 					continue;
