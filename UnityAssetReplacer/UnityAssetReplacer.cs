@@ -93,6 +93,7 @@ namespace UnityAssetReplacer {
 			var bunWriter = new AssetsFileWriter(File.OpenWrite(outputAssetBundlePath));
 			_assetsBundleFile.file.Write(bunWriter, new List<BundleReplacer> { bundleReplacer });
 			_assetsBundleFile.file.Close();
+			bunWriter.Close();
 		}
 
 		// Method to dump bytes to a specified path from assets in an asset file with a given member name
