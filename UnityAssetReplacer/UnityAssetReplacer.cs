@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -72,7 +72,7 @@ namespace UnityAssetReplacer {
 
 				// Add new replacer to list of replacers
 				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-					0xFFFF, newGoBytes);
+					AssetHelper.GetScriptIndex(_assetsFile.file, assetInfo), newGoBytes);
 				assetReplacers.Add(assetsReplacer);
 			}
 
