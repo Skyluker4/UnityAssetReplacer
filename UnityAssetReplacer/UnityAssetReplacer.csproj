@@ -31,7 +31,7 @@
     <PackageId>UnityAssetReplacer</PackageId>
     <Authors>Luke Simmons</Authors>
     <PackageTags>C#, Unity, Asset Bundle, Asset Bundles, Asset Bundling, Reverse Engineering, Extract, Extractor, Extraction, Extract Data, .NET, .NET Core, .NET 5</PackageTags>
-    <PackageReleaseNotes>- Creates an output directory for dumping if it does not exist yet</PackageReleaseNotes>
+    <PackageReleaseNotes>- Properly closes streams to write files correctly</PackageReleaseNotes>
     <RootNamespace>UnityAssetReplacer</RootNamespace>
     <PackageRequireLicenseAcceptance>true</PackageRequireLicenseAcceptance>
     <PackageLicenseFile>../LICENSE</PackageLicenseFile>
