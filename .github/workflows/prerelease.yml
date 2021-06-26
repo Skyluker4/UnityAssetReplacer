@@ -6,7 +6,7 @@ on:
       main
 
 jobs:
-  Build:  
+  Build:
     runs-on: ubuntu-latest
 
     strategy:
@@ -17,40 +17,40 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@main
-      
+
     - name: Setup .NET
       uses: actions/setup-dotnet@main
       with:
         dotnet-version: 5.0.x
-      
+
     - name: Build
       run: dotnet publish -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release -r ${{matrix.platform}}
-      
+
     - name: Copy LICENSE
       run: cp LICENSE UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/LICENSE
-      
+
     - name: Copy README.md
       run: cp README.md UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/README.md
-      
+
     - name: Compress
       working-directory: UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/
       run: zip -9 UnityAssetReplacer-${{matrix.platform}}-prerelease.zip *
-      
+
     - name: Upload Package
       uses: actions/upload-artifact@main
       with:
         name: UnityAssetReplacer-${{matrix.platform}}-prerelease.zip
         path: UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/UnityAssetReplacer-${{matrix.platform}}-prerelease.zip
         if-no-files-found: error
-      
+
   Upload:
     needs: Build
     runs-on: ubuntu-latest
-    
+
     steps:
     - name: Download Packages
       uses: actions/download-artifact@main
-    
+
     - name: Upload Pre-release
       uses: marvinpinto/action-automatic-releases@latest
       with:

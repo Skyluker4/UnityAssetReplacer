@@ -7,7 +7,7 @@ on:
 
 jobs:
   Build:
-    runs-on: ubuntu-latest    
+    runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
@@ -17,12 +17,12 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@main
-      
+
     - name: Setup .NET
       uses: actions/setup-dotnet@main
       with:
         dotnet-version: 5.0.x
-      
+
     - name: Build
       working-directory: UnityAssetReplacer/
       run: dotnet build -c Release -r ${{matrix.platform}}
