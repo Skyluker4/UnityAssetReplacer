@@ -24,5 +24,17 @@ jobs:
         dotnet-version: 5.0.x
 
     - name: Build
-      working-directory: UnityAssetReplacer/
-      run: dotnet build -c Release -r ${{matrix.platform}}
+      run: dotnet publish -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release -r ${{matrix.platform}}
+
+    - name: Copy LICENSE
+      run: cp LICENSE UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/LICENSE
+
+    - name: Copy README.md
+      run: cp README.md UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/README.md
+
+    - name: Upload Package
+      uses: actions/upload-artifact@main
+      with:
+        name: UnityAssetReplacer-${{matrix.platform}}-${{github.sha}}.zip
+        path: UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/
+        if-no-files-found: error

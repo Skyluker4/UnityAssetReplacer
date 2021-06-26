@@ -1,55 +1,29 @@
 name: Upload Pre-release
 
 on:
-  push:
-    branches:
-      main
+  workflow_run:
+    workflows: Build
+    branches: main
+    types:
+      - completed
 
 jobs:
-  Build:
-    runs-on: ubuntu-latest
-
-    strategy:
-      fail-fast: true
-      matrix:
-          platform: [win-x86, win-x64, linux-x64, osx-x64]
-
-    steps:
-    - name: Checkout Repository
-      uses: actions/checkout@main
-
-    - name: Setup .NET
-      uses: actions/setup-dotnet@main
-      with:
-        dotnet-version: 5.0.x
-
-    - name: Build
-      run: dotnet publish -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release -r ${{matrix.platform}}
-
-    - name: Copy LICENSE
-      run: cp LICENSE UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/LICENSE
-
-    - name: Copy README.md
-      run: cp README.md UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/README.md
-
-    - name: Compress
-      working-directory: UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/
-      run: zip -9 UnityAssetReplacer-${{matrix.platform}}-prerelease.zip *
-
-    - name: Upload Package
-      uses: actions/upload-artifact@main
-      with:
-        name: UnityAssetReplacer-${{matrix.platform}}-prerelease.zip
-        path: UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/UnityAssetReplacer-${{matrix.platform}}-prerelease.zip
-        if-no-files-found: error
-
   Upload:
-    needs: Build
     runs-on: ubuntu-latest
 
     steps:
     - name: Download Packages
-      uses: actions/download-artifact@main
+      uses: dawidd6/action-download-artifact@master
+      with:
+        workflow: build.yml
+        commit: ${{github.sha}}
+
+    - name: Prepare the Packages
+      run: |
+        cd ${{github.workspace}}/UnityAssetReplacer-win-x86-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-win-x86-prerelease.zip *
+        cd ${{github.workspace}}/UnityAssetReplacer-win-x64-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-win-x64-prerelease.zip *
+        cd ${{github.workspace}}/UnityAssetReplacer-linux-x64-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-linux-x64-prerelease.zip *
+        cd ${{github.workspace}}/UnityAssetReplacer-osx-x64-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-osx-x64-prerelease.zip *
 
     - name: Upload Pre-release
       uses: marvinpinto/action-automatic-releases@latest
@@ -58,7 +32,7 @@ jobs:
           automatic_release_tag: latest
           title: Development Build
           files: |
-            UnityAssetReplacer-win-x86-prerelease.zip
-            UnityAssetReplacer-win-x64-prerelease.zip
-            UnityAssetReplacer-linux-x64-prerelease.zip
-            UnityAssetReplacer-osx-x64-prerelease.zip
+            UnityAssetReplacer-win-x86-${{github.sha}}.zip/UnityAssetReplacer-win-x86-prerelease.zip
+            UnityAssetReplacer-win-x64-${{github.sha}}.zip/UnityAssetReplacer-win-x64-prerelease.zip
+            UnityAssetReplacer-linux-x64-${{github.sha}}.zip/UnityAssetReplacer-linux-x64-prerelease.zip
+            UnityAssetReplacer-osx-x64-${{github.sha}}.zip/UnityAssetReplacer-osx-x64-prerelease.zip
