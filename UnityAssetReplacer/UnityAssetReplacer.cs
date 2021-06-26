@@ -58,8 +58,11 @@ namespace UnityAssetReplacer {
 				// Check if member is null
 				if (member is null) {
 					// Print error: Member wasn't found in asset
-					Console.Error.WriteLine("ERROR: Can't read member '" + _memberName + "' in asset '" +
-											inputFileName + "'!");
+					Console.Error.WriteLine("ERROR: Can't read member '" +
+					                        _memberName                  +
+					                        "' in asset '"               +
+					                        inputFileName                +
+					                        "'!");
 
 					// Go on to next asset
 					continue;
@@ -72,18 +75,21 @@ namespace UnityAssetReplacer {
 
 				// Add new replacer to list of replacers
 				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-					AssetHelper.GetScriptIndex(_assetsFile.file, assetInfo), newGoBytes);
+				                                                  AssetHelper.GetScriptIndex(_assetsFile.file,
+					                                                  assetInfo), newGoBytes);
 				assetReplacers.Add(assetsReplacer);
 			}
 
 			// Write changes to the asset bundle
 			byte[] newAssetData;
-			using (var stream = new MemoryStream())
-			using (var writer = new AssetsFileWriter(stream)) {
-				_assetsFile.file.Write(writer, 0, assetReplacers, 0);
-				writer.Close();
-				stream.Close();
-				newAssetData = stream.ToArray();
+
+			using (var stream = new MemoryStream()) {
+				using (var writer = new AssetsFileWriter(stream)) {
+					_assetsFile.file.Write(writer, 0, assetReplacers, 0);
+					writer.Close();
+					stream.Close();
+					newAssetData = stream.ToArray();
+				}
 			}
 
 			var bundleReplacer =
@@ -115,8 +121,11 @@ namespace UnityAssetReplacer {
 				// Check if member is null
 				if (memberValue is null) {
 					// Print error: Member wasn't found in asset
-					Console.Error.WriteLine("ERROR: Can't read member '" + _memberName + "' in asset '" + assetName +
-											"'!");
+					Console.Error.WriteLine("ERROR: Can't read member '" +
+					                        _memberName                  +
+					                        "' in asset '"               +
+					                        assetName                    +
+					                        "'!");
 
 					// Go on to next asset
 					continue;

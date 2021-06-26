@@ -16,35 +16,18 @@ namespace UnityAssetReplacer {
 
 			// Instructions
 			var options = new OptionSet {
-				{
-					"b|bundle=", "the original asset {BUNDLE} path",
-					v => inputAssetBundlePath = v
-				}, {
-					"i|input=",
-					"the {INPUT} directory of the assets you wish to overwrite with.",
+				{ "b|bundle=", "the original asset {BUNDLE} path", v => inputAssetBundlePath = v }, {
+					"i|input=", "the {INPUT} directory of the assets you wish to overwrite with.",
 					v => inputDirectory = v
-				}, {
-					"o|output=",
-					"the path of the asset bundle you wish to {OUTPUT}.",
-					v => outputAssetBundlePath = v
-				}, {
-					"d|dump=",
-					"the path of the directory you wish to {DUMP} to.",
-					v => dumpPath = v
-				}, {
-					"m|member=",
-					"the {MEMBER} you dump/overwrite.",
-					v => member = v
-				}, {
-					"h|?|help", "show this message for and then exit.",
-					v => help = v != null
-				}
+				},
+				{ "o|output=", "the path of the asset bundle you wish to {OUTPUT}.", v => outputAssetBundlePath = v },
+				{ "d|dump=", "the path of the directory you wish to {DUMP} to.", v => dumpPath = v },
+				{ "m|member=", "the {MEMBER} you dump/overwrite.", v => member = v },
+				{ "h|?|help", "show this message for and then exit.", v => help = v != null }
 			};
 
 			// Parse arguments
-			try {
-				options.Parse(args);
-			}
+			try { options.Parse(args); }
 			catch (OptionException e) {
 				Console.WriteLine(e.Message);
 				options.WriteOptionDescriptions(Console.Out);
@@ -66,8 +49,8 @@ namespace UnityAssetReplacer {
 				// If nothing can be run, display help message and exit
 				if (!(dump || replace)) {
 					Console.Error.WriteLine("To DUMP, the BUNDLE, MEMBER, and DUMP arguments must be specified.");
-					Console.Error.WriteLine(
-						"To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
+					Console.Error
+					       .WriteLine("To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
 					Help();
 					return;
 				}
