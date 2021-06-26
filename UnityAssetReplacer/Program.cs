@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 
 using Mono.Options;
 
@@ -50,7 +50,7 @@ namespace UnityAssetReplacer {
 				if (!(dump || replace)) {
 					Console.Error.WriteLine("To DUMP, the BUNDLE, MEMBER, and DUMP arguments must be specified.");
 					Console.Error
-					       .WriteLine("To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
+							.WriteLine("To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
 					Help();
 					return;
 				}

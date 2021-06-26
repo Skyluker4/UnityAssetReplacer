@@ -59,10 +59,10 @@ namespace UnityAssetReplacer {
 				if (member is null) {
 					// Print error: Member wasn't found in asset
 					Console.Error.WriteLine("ERROR: Can't read member '" +
-					                        _memberName                  +
-					                        "' in asset '"               +
-					                        inputFileName                +
-					                        "'!");
+											_memberName +
+											"' in asset '" +
+											inputFileName +
+											"'!");
 
 					// Go on to next asset
 					continue;
@@ -75,8 +75,8 @@ namespace UnityAssetReplacer {
 
 				// Add new replacer to list of replacers
 				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-				                                                  AssetHelper.GetScriptIndex(_assetsFile.file,
-					                                                  assetInfo), newGoBytes);
+																AssetHelper.GetScriptIndex(_assetsFile.file, assetInfo),
+																newGoBytes);
 				assetReplacers.Add(assetsReplacer);
 			}
 
@@ -122,10 +122,10 @@ namespace UnityAssetReplacer {
 				if (memberValue is null) {
 					// Print error: Member wasn't found in asset
 					Console.Error.WriteLine("ERROR: Can't read member '" +
-					                        _memberName                  +
-					                        "' in asset '"               +
-					                        assetName                    +
-					                        "'!");
+											_memberName +
+											"' in asset '" +
+											assetName +
+											"'!");
 
 					// Go on to next asset
 					continue;
