@@ -84,12 +84,11 @@ namespace UnityAssetReplacer {
 			byte[] newAssetData;
 
 			using (var stream = new MemoryStream()) {
-				using (var writer = new AssetsFileWriter(stream)) {
-					_assetsFile.file.Write(writer, 0, assetReplacers, 0);
-					writer.Close();
-					stream.Close();
-					newAssetData = stream.ToArray();
-				}
+				using var writer = new AssetsFileWriter(stream);
+				_assetsFile.file.Write(writer, 0, assetReplacers, 0);
+				writer.Close();
+				stream.Close();
+				newAssetData = stream.ToArray();
 			}
 
 			var bundleReplacer =
