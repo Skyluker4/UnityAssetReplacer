@@ -1,11 +1,8 @@
 name: Upload Release
 
 on:
-  workflow_run:
-    workflows: Build
+  push:
     tags: v*
-    types:
-      - completed
 
 jobs:
   Upload:
