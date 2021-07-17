@@ -16,10 +16,8 @@ namespace UnityAssetReplacer {
 
 			// Instructions
 			var options = new OptionSet {
-				{ "b|bundle=", "the original asset {BUNDLE} path", v => inputAssetBundlePath = v }, {
-					"i|input=", "the {INPUT} directory of the assets you wish to overwrite with.",
-					v => inputDirectory = v
-				},
+				{ "b|bundle=", "the original asset {BUNDLE} path", v => inputAssetBundlePath = v },
+				{ "i|input=", "the {INPUT} directory of the assets to overwrite with.", v => inputDirectory = v },
 				{ "o|output=", "the path of the asset bundle you wish to {OUTPUT}.", v => outputAssetBundlePath = v },
 				{ "d|dump=", "the path of the directory you wish to {DUMP} to.", v => dumpPath = v },
 				{ "m|member=", "the {MEMBER} you dump/overwrite.", v => member = v },
