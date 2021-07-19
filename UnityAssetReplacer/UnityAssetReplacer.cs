@@ -19,16 +19,15 @@ namespace UnityAssetReplacer {
 		// Global arguments
 		private readonly string _memberName;
 
-		// Constructor
-		public UnityAssetReplacer(string inputAssetBundlePath, string memberName) {
-			// Save member to read
-			_memberName = memberName;
-
+		// Constructors
+		public UnityAssetReplacer(string inputAssetBundlePath) {
 			// Open the asset bundle file and get info
 			_assetsBundleFile = _assetsManager.LoadBundleFile(inputAssetBundlePath);
 			_assetsFile = _assetsManager.LoadAssetsFileFromBundle(_assetsBundleFile, 0);
 			_assetsTable = _assetsFile.table;
 		}
+
+		public UnityAssetReplacer(string inputAssetBundlePath, string memberName) : this(inputAssetBundlePath) =>_memberName = memberName;
 
 		// Method to replace assets in an asset file given an input directory and an output path
 		public void ReplaceAssets(string inputDirectory, string outputAssetBundlePath) {
@@ -137,5 +136,9 @@ namespace UnityAssetReplacer {
 				File.WriteAllBytes(dumpPath + "/" + assetName, memberString);
 			}
 		}
+
+		public void DumpTextures(string dumpPath) { }
+
+		public void ReplaceTextures(string inputDirectory, string outputAssetBundlePath) { }
 	}
 }

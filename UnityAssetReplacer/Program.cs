@@ -12,6 +12,7 @@ namespace UnityAssetReplacer {
 			string outputAssetBundlePath = null;
 			string inputDirectory = null;
 			string dumpPath = null;
+			var textures = false;
 			var help = false;
 
 			// Instructions
@@ -21,6 +22,7 @@ namespace UnityAssetReplacer {
 				{ "o|output=", "the path of the asset bundle you wish to {OUTPUT}.", v => outputAssetBundlePath = v },
 				{ "d|dump=", "the path of the directory you wish to {DUMP} to.", v => dumpPath = v },
 				{ "m|member=", "the {MEMBER} you dump/overwrite.", v => member = v },
+				{ "t|texture", "Interact with {TEXTURE}s in the asset bundle.", v => textures = v != null },
 				{ "h|?|help", "show this message for and then exit.", v => help = v != null }
 			};
 
@@ -39,7 +41,7 @@ namespace UnityAssetReplacer {
 			}
 
 			// Make sure bundle and member are not null
-			if (inputAssetBundlePath != null && member != null) {
+			if (inputAssetBundlePath != null) {
 				// Check what can be run
 				var dump = dumpPath != null;
 				var replace = inputDirectory != null && outputAssetBundlePath != null;
@@ -48,23 +50,44 @@ namespace UnityAssetReplacer {
 				if (!(dump || replace)) {
 					Console.Error.WriteLine("To DUMP, the BUNDLE, MEMBER, and DUMP arguments must be specified.");
 					Console.Error
-							.WriteLine("To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
+					       .WriteLine("To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
 					Help();
 					return;
 				}
 
-				// Initialize
-				var uar = new UnityAssetReplacer(inputAssetBundlePath, member);
+				// Textures
+				if (textures) {
+					// Initialize
+					var uar = new UnityAssetReplacer(inputAssetBundlePath);
 
-				// Dump if arguments are provided
-				if (dump) uar.DumpAssets(dumpPath);
+					// Dump 
+					if (dump) uar.DumpTextures(dumpPath);
 
-				// Replace
-				if (inputDirectory != null && outputAssetBundlePath != null)
-					uar.ReplaceAssets(inputDirectory, outputAssetBundlePath);
+					// Replace
+					if (replace) uar.ReplaceTextures(inputDirectory, outputAssetBundlePath);
+				}
+
+				// Members
+				else if (member != null) {
+					// Initialize
+					var uar = new UnityAssetReplacer(inputAssetBundlePath, member);
+
+					// Dump if arguments are provided
+					if (dump) uar.DumpAssets(dumpPath);
+
+					// Replace
+					if (inputDirectory != null && outputAssetBundlePath != null)
+						uar.ReplaceAssets(inputDirectory, outputAssetBundlePath);
+				}
+
+				// Error - Not enough arguments provided
+				else {
+					Console.Error.WriteLine("A MEMBER must be specified or interact with TEXTURES.");
+					Help();
+				}
 			}
 			else {
-				Console.Error.WriteLine("An asset BUNDLE and a MEMBER must be specified.");
+				Console.Error.WriteLine("An asset BUNDLE must be specified.");
 				Help();
 			}
 		}
