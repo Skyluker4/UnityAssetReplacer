@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 using AssetsTools.NET;
 using AssetsTools.NET.Extra;
@@ -137,7 +140,71 @@ namespace UnityAssetReplacer {
 			}
 		}
 
-		public void DumpTextures(string dumpPath) { }
+		// Read texture data. Copied from nesrak1's UABEA TexturePlugin
+		private static bool GetResSTexture(TextureFile texFile, AssetsFileInstance inst) {
+			var streamInfo = texFile.m_StreamData;
+			if (string.IsNullOrEmpty(streamInfo.path) || inst.parentBundle == null) return true;
+
+			// Some versions apparently don't use archive:/
+			var searchPath = streamInfo.path;
+			if (searchPath.StartsWith("archive:/"))
+				searchPath = searchPath[9..];
+
+			searchPath = Path.GetFileName(searchPath);
+
+			var bundle = inst.parentBundle.file;
+
+			var reader = bundle.reader;
+			var dirInf = bundle.bundleInf6.dirInf;
+			foreach (var info in dirInf) {
+				if (info.name != searchPath) continue;
+				reader.Position = bundle.bundleHeader6.GetFileDataOffset() + info.offset + streamInfo.offset;
+				texFile.pictureData = reader.ReadBytes((int)streamInfo.size);
+				texFile.m_StreamData.offset = 0;
+				texFile.m_StreamData.size = 0;
+				texFile.m_StreamData.path = "";
+				return true;
+			}
+			return false;
+		}
+
+		// Dump all textures from asset file
+		public void DumpTextures(string dumpPath) {
+			// Create output folder
+			Directory.CreateDirectory(dumpPath);
+
+			// Loop through every Texture2D (0x1C) in asset file
+			foreach (var inf in _assetsTable.GetAssetsOfType(0x1C)) {
+				// Get specific asset
+				var baseField = _assetsManager.GetTypeInstance(_assetsFile.file, inf).GetBaseField();
+
+				// Get the name of the asset
+				var assetName = baseField.Get("m_Name").GetValue().AsString();
+
+				// Get texture file
+				var tf = TextureFile.ReadTextureFile(baseField);
+
+				// Read image data
+				if (!GetResSTexture(tf, _assetsFile)) {
+					Console.Error.WriteLine("ERROR: Can't read image data from '" + assetName + "'!");
+					continue;
+				}
+
+				// Read texture data
+				var texDat = tf.GetTextureData();
+				// Make sure it read successfully
+				if (texDat is not { Length: > 0 }) {
+					Console.Error.WriteLine("ERROR: Can't read texture data from '" + assetName + "'!");
+					continue;
+				}
+
+				// Save bitmap
+				var bitmap = new Bitmap(tf.m_Width, tf.m_Height, tf.m_Width * 4, PixelFormat.Format32bppArgb, Marshal.UnsafeAddrOfPinnedArrayElement(texDat, 0));
+				bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
+				bitmap.Save(dumpPath + "/" + assetName + ".png");
+				bitmap.Dispose();
+			}
+		}
 
 		public void ReplaceTextures(string inputDirectory, string outputAssetBundlePath) { }
 	}
