@@ -1,0 +1,3 @@
+[submodule "UABEA"]
+	path = UABEA
+	url = https://github.com/nesrak1/UABEA.git
