@@ -9,6 +9,8 @@ using System.Runtime.InteropServices;
 using AssetsTools.NET;
 using AssetsTools.NET.Extra;
 
+using TexturePlugin;
+
 namespace UnityAssetReplacer {
 	public class UnityAssetReplacer {
 		private readonly BundleFileInstance _assetsBundleFile;
@@ -206,6 +208,79 @@ namespace UnityAssetReplacer {
 			}
 		}
 
-		public void ReplaceTextures(string inputDirectory, string outputAssetBundlePath) { }
+		public void ReplaceTextures(string inputDirectory, string outputAssetBundlePath) {
+			// Get list of all files in input folder
+			var inputFilePaths = Directory.GetFiles(inputDirectory, "*", SearchOption.TopDirectoryOnly);
+
+			// Create list to hold replacers
+			var assetReplacers = new List<AssetsReplacer>();
+
+			// Loop through every asset in input folder and try to open the name
+			foreach (var inputFilePath in inputFilePaths) {
+				// Set name
+				var inputFileName = inputFilePath.Split('\\').Last();
+
+				// Get specific asset from asset table
+				var assetInfo = _assetsTable.GetAssetInfo(inputFileName.Split('.').First(), 0x1C); // 0x1C is texture
+				var baseField = _assetsManager.GetTypeInstance(_assetsFile.file, assetInfo).GetBaseField();
+				var fmt = (TextureFormat)baseField.Get("m_TextureFormat").GetValue().AsInt();
+
+				var encImageBytes = TextureImportExport.ImportPng(inputFilePath, fmt, out var width, out var height);
+
+				if (encImageBytes == null) {
+					Console.Error.WriteLine("ERROR: Could not decode image '" + inputFilePath + "'!");
+					continue;
+				}
+
+				// TODO: READ FROM STREAM DATA FRIST
+
+				var streamData = baseField.Get("m_StreamData");
+				streamData.Get("offset").GetValue().Set(0);
+				streamData.Get("size").GetValue().Set(0);
+				streamData.Get("path").GetValue().Set("");
+
+				baseField.Get("m_TextureFormat").GetValue().Set((int)fmt);
+
+				baseField.Get("m_Width").GetValue().Set(width);
+				baseField.Get("m_Height").GetValue().Set(height);
+
+				var imageData = baseField.Get("image data");
+				imageData.GetValue().type = EnumValueTypes.ByteArray;
+				imageData.templateField.valueType = EnumValueTypes.ByteArray;
+				var byteArray = new AssetTypeByteArray() {
+					size = (uint)encImageBytes.Length,
+					data = encImageBytes
+				};
+				imageData.GetValue().Set(byteArray);
+
+				var newGoBytes = baseField.WriteToByteArray();
+
+				// Add new replacer to list of replacers
+				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
+				                                                  AssetHelper.GetScriptIndex(_assetsFile.file, assetInfo),
+				                                                  newGoBytes);
+				assetReplacers.Add(assetsReplacer);
+			}
+
+			// Write changes to the asset bundle
+			byte[] newAssetData;
+
+			using (var stream = new MemoryStream()) {
+				using var writer = new AssetsFileWriter(stream);
+				_assetsFile.file.Write(writer, 0, assetReplacers, 0);
+				writer.Close();
+				stream.Close();
+				newAssetData = stream.ToArray();
+			}
+
+			var bundleReplacer =
+				new BundleReplacerFromMemory(_assetsFile.name, _assetsFile.name, true, newAssetData, -1);
+
+			// Save the new output file
+			var bunWriter = new AssetsFileWriter(File.OpenWrite(outputAssetBundlePath));
+			_assetsBundleFile.file.Write(bunWriter, new List<BundleReplacer> { bundleReplacer });
+			_assetsBundleFile.file.Close();
+			bunWriter.Close();
+		}
 	}
 }
