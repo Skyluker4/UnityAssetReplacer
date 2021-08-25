@@ -1,10 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
-using System.Runtime.InteropServices;
 
 using AssetsTools.NET;
 using AssetsTools.NET.Extra;
@@ -64,10 +61,10 @@ namespace UnityAssetReplacer {
 				if (member is null) {
 					// Print error: Member wasn't found in asset
 					Console.Error.WriteLine("ERROR: Can't read member '" +
-					                        _memberName +
-					                        "' in asset '" +
-					                        inputFileName +
-					                        "'!");
+											_memberName +
+											"' in asset '" +
+											inputFileName +
+											"'!");
 
 					// Go on to next asset
 					continue;
@@ -80,8 +77,8 @@ namespace UnityAssetReplacer {
 
 				// Add new replacer to list of replacers
 				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-				                                                  AssetHelper.GetScriptIndex(_assetsFile.file,
-					                                                  assetInfo), newGoBytes);
+																  AssetHelper.GetScriptIndex(_assetsFile.file,
+																	  assetInfo), newGoBytes);
 				assetReplacers.Add(assetsReplacer);
 			}
 
@@ -126,10 +123,10 @@ namespace UnityAssetReplacer {
 				if (memberValue is null) {
 					// Print error: Member wasn't found in asset
 					Console.Error.WriteLine("ERROR: Can't read member '" +
-					                        _memberName +
-					                        "' in asset '" +
-					                        assetName +
-					                        "'!");
+											_memberName +
+											"' in asset '" +
+											assetName +
+											"'!");
 
 					// Go on to next asset
 					continue;
@@ -143,7 +140,7 @@ namespace UnityAssetReplacer {
 			}
 		}
 
-		// Read texture data. Copied from nesrak1's UABEA TexturePlugin
+		// Read texture data. Copied from nesrak1's UABEA TexturePlugin.
 		private static bool GetResSTexture(TextureFile texFile, AssetsFileInstance inst) {
 			var streamInfo = texFile.m_StreamData;
 			if (string.IsNullOrEmpty(streamInfo.path) || inst.parentBundle == null) return true;
@@ -173,6 +170,25 @@ namespace UnityAssetReplacer {
 			return false;
 		}
 
+		// Read texture image bytes. Copied from nesrak1's UABEA TexturePlugin.
+		private static byte[] GetRawTextureBytes(TextureFile texFile, AssetsFileInstance inst) {
+			var rootPath = Path.GetDirectoryName(inst.path);
+			if (texFile.m_StreamData.size == 0 || texFile.m_StreamData.path == string.Empty) return texFile.pictureData;
+			var fixedStreamPath = texFile.m_StreamData.path;
+			if (!Path.IsPathRooted(fixedStreamPath) && rootPath != null)
+				fixedStreamPath = Path.Combine(rootPath, fixedStreamPath);
+
+			if (File.Exists(fixedStreamPath)) {
+				Stream stream = File.OpenRead(fixedStreamPath);
+				stream.Position = texFile.m_StreamData.offset;
+				texFile.pictureData = new byte[texFile.m_StreamData.size];
+				stream.Read(texFile.pictureData, 0, (int)texFile.m_StreamData.size);
+			}
+			else { return Array.Empty<byte>(); }
+
+			return texFile.pictureData;
+		}
+
 		// Dump all textures from asset file
 		public void DumpTextures(string dumpPath) {
 			// Create output folder
@@ -196,23 +212,22 @@ namespace UnityAssetReplacer {
 				}
 
 				// Read texture data
-				var texDat = tf.GetTextureData();
+				var data = GetRawTextureBytes(tf, _assetsFile);
 
-				// Make sure it read successfully
-				if (texDat is not { Length: > 0 }) {
-					Console.Error.WriteLine("ERROR: Can't read texture data from '" + assetName + "'!");
+				if (data == null || data.Length < 1) {
+					// Print error: Texture wasn't able to be read
+					Console.Error.WriteLine("ERROR: Can't read texture '" + assetName + "'!");
+
+					// Go on to next asset
 					continue;
 				}
 
-				// Save bitmap
-				var bitmap = new Bitmap(tf.m_Width, tf.m_Height, tf.m_Width * 4, PixelFormat.Format32bppArgb,
-				                        Marshal.UnsafeAddrOfPinnedArrayElement(texDat, 0));
-				bitmap.RotateFlip(RotateFlipType.RotateNoneFlipY);
-				bitmap.Save(dumpPath + "/" + assetName + ".png");
-				bitmap.Dispose();
+				_ = TextureImportExport.ExportPng(data, dumpPath + "/" + assetName + ".png", tf.m_Width, tf.m_Height,
+												  (TextureFormat)tf.m_TextureFormat);
 			}
 		}
 
+		// Replace found textures in files
 		public void ReplaceTextures(string inputDirectory, string outputAssetBundlePath) {
 			// Get list of all files in input folder
 			var inputFilePaths = Directory.GetFiles(inputDirectory, "*", SearchOption.TopDirectoryOnly);
@@ -233,8 +248,8 @@ namespace UnityAssetReplacer {
 				if (assetInfo is null) {
 					// Print error: Asset wasn't found with name
 					Console.Error.WriteLine("ERROR: Can't replace texture '" +
-					                        assetName +
-					                        "'! Make sure texture already exists in the assets file!");
+											assetName +
+											"'! Make sure texture already exists in the assets file!");
 
 					// Go on to next asset
 					continue;
@@ -270,8 +285,8 @@ namespace UnityAssetReplacer {
 
 				// Add new replacer to list of replacers
 				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-				                                                  AssetHelper.GetScriptIndex(_assetsFile.file,
-					                                                  assetInfo), newGoBytes);
+																  AssetHelper.GetScriptIndex(_assetsFile.file,
+																	  assetInfo), newGoBytes);
 				assetReplacers.Add(assetsReplacer);
 			}
 
