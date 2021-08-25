@@ -43,7 +43,7 @@ namespace UnityAssetReplacer {
 			// Loop through every asset in input folder and try to open the name
 			foreach (var inputFilePath in inputFilePaths) {
 				// Set name
-				var inputFileName = inputFilePath.Split('\\').Last();
+				var inputFileName = inputFilePath.Split('/').Last();
 
 				// Get specific asset from asset table
 				var assetInfo = _assetsTable.GetAssetInfo(inputFileName);
