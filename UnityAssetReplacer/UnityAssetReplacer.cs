@@ -249,10 +249,11 @@ namespace UnityAssetReplacer {
 					// Print error: Asset wasn't found with name
 					Console.Error.WriteLine("ERROR: Can't replace texture '" +
 											assetName +
-											"'! Make sure texture already exists in the assets file!");
+											"'! Make sure texture already exists in the assets file!" +
+											"\nQUITTING!");
 
-					// Go on to next asset
-					continue;
+					// Quit replacing textures
+					return;
 				}
 
 				var baseField = _assetsManager.GetTypeInstance(_assetsFile.file, assetInfo).GetBaseField();
