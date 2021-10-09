@@ -77,8 +77,8 @@ namespace UnityAssetReplacer {
 
 				// Add new replacer to list of replacers
 				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-																  AssetHelper.GetScriptIndex(_assetsFile.file,
-																	  assetInfo), newGoBytes);
+																AssetHelper.GetScriptIndex(_assetsFile.file,
+																assetInfo), newGoBytes);
 				assetReplacers.Add(assetsReplacer);
 			}
 
@@ -223,7 +223,7 @@ namespace UnityAssetReplacer {
 				}
 
 				_ = TextureImportExport.ExportPng(data, dumpPath + "/" + assetName + ".png", tf.m_Width, tf.m_Height,
-												  (TextureFormat)tf.m_TextureFormat);
+												(TextureFormat)tf.m_TextureFormat);
 			}
 		}
 
@@ -286,8 +286,8 @@ namespace UnityAssetReplacer {
 
 				// Add new replacer to list of replacers
 				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-																  AssetHelper.GetScriptIndex(_assetsFile.file,
-																	  assetInfo), newGoBytes);
+																	AssetHelper.GetScriptIndex(_assetsFile.file,
+																		assetInfo), newGoBytes);
 				assetReplacers.Add(assetsReplacer);
 			}
 

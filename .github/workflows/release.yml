@@ -9,22 +9,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Download Packages
-      uses: dawidd6/action-download-artifact@master
-      with:
-        workflow: build.yml
-        commit: ${{github.sha}}
+      - name: Download Packages
+        uses: dawidd6/action-download-artifact@master
+        with:
+          workflow: build.yml
+          commit: ${{github.sha}}
 
-    - name: Prepare the Packages
-      run: |
-        cd ${{github.workspace}}/UnityAssetReplacer-win-x86-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-win-x86.zip *
-        cd ${{github.workspace}}/UnityAssetReplacer-win-x64-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-win-x64.zip *
-        cd ${{github.workspace}}/UnityAssetReplacer-linux-x64-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-linux-x64.zip *
-        cd ${{github.workspace}}/UnityAssetReplacer-osx-x64-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-osx-x64.zip *
+      - name: Prepare the Packages
+        run: |
+          cd ${{github.workspace}}/UnityAssetReplacer-win-x86-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-win-x86.zip ./*
+          cd ${{github.workspace}}/UnityAssetReplacer-win-x64-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-win-x64.zip ./*
+          cd ${{github.workspace}}/UnityAssetReplacer-linux-x64-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-linux-x64.zip ./*
+          cd ${{github.workspace}}/UnityAssetReplacer-osx-x64-${{github.sha}}.zip/ && zip -9 UnityAssetReplacer-osx-x64.zip ./*
 
-    - name: Upload Release
-      uses: marvinpinto/action-automatic-releases@latest
-      with:
+      - name: Upload Release
+        uses: marvinpinto/action-automatic-releases@latest
+        with:
           repo_token: ${{secrets.GITHUB_TOKEN}}
           prerelease: false
           files: |
