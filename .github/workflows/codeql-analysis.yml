@@ -36,7 +36,7 @@ jobs:
           dotnet-version: 5.0.x
 
       - name: Build
-        run: dotnet publish -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release -r ${{matrix.platform}}
+        run: dotnet publish -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release
 
       - name: Perform CodeQL Analysis
         uses: github/codeql-action/analyze@main
