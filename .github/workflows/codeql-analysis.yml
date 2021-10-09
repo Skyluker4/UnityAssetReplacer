@@ -19,19 +19,26 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        language: [ 'csharp' ]
+        language: ["csharp"]
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@main
+      - name: Checkout Repository
+        uses: actions/checkout@main
+        with:
+          submodules: recursive
 
-    - name: Initialize CodeQL
-      uses: github/codeql-action/init@main
-      with:
-        languages: ${{ matrix.language }}
+      - name: Initialize CodeQL
+        uses: github/codeql-action/init@main
+        with:
+          languages: ${{ matrix.language }}
 
-    - name: Autobuild
-      uses: github/codeql-action/autobuild@main
+      - name: Setup .NET
+        uses: actions/setup-dotnet@main
+        with:
+          dotnet-version: 5.0.x
 
-    - name: Perform CodeQL Analysis
-      uses: github/codeql-action/analyze@main
+      - name: Build
+        run: dotnet publish -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@main
