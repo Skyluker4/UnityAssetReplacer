@@ -22,18 +22,52 @@ namespace UnityAssetReplacer {
 		private readonly string _memberName;
 
 		// Constructors
-		public UnityAssetReplacer(string inputAssetBundlePath) {
+		public UnityAssetReplacer(in string inputAssetBundlePath) {
 			// Open the asset bundle file and get info
 			_assetsBundleFile = _assetsManager.LoadBundleFile(inputAssetBundlePath);
 			_assetsFile = _assetsManager.LoadAssetsFileFromBundle(_assetsBundleFile, 0);
 			_assetsTable = _assetsFile.table;
 		}
 
-		public UnityAssetReplacer(string inputAssetBundlePath, string memberName) : this(inputAssetBundlePath) =>
+		public UnityAssetReplacer(in string inputAssetBundlePath, in string memberName) : this(inputAssetBundlePath) =>
 			_memberName = memberName;
 
+		// Helper function to add replacer to replacer list
+		private void AddReplacer(in AssetTypeValueField baseField, in AssetFileInfoEx assetInfo, ref List<AssetsReplacer> assetReplacers) {
+			var newGoBytes = baseField.WriteToByteArray();
+
+			// Add new replacer to list of replacers
+			var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
+			                                                  AssetHelper.GetScriptIndex(_assetsFile.file,
+				                                                  assetInfo), newGoBytes);
+			assetReplacers.Add(assetsReplacer);
+		}
+
+		// Helper function to run replacer on bundle
+		private void ReplaceInBundle(in List<AssetsReplacer> assetReplacers, in string outputAssetBundlePath) {
+			// Write changes to the asset bundle
+			byte[] newAssetData;
+
+			using (var stream = new MemoryStream()) {
+				using var writer = new AssetsFileWriter(stream);
+				_assetsFile.file.Write(writer, 0, assetReplacers, 0);
+				writer.Close();
+				stream.Close();
+				newAssetData = stream.ToArray();
+			}
+
+			var bundleReplacer =
+				new BundleReplacerFromMemory(_assetsFile.name, _assetsFile.name, true, newAssetData, -1);
+
+			// Save the new output file
+			var bunWriter = new AssetsFileWriter(File.OpenWrite(outputAssetBundlePath));
+			_assetsBundleFile.file.Write(bunWriter, new List<BundleReplacer> { bundleReplacer });
+			_assetsBundleFile.file.Close();
+			bunWriter.Close();
+		}
+
 		// Method to replace assets in an asset file given an input directory and an output path
-		public void ReplaceAssets(string inputDirectory, string outputAssetBundlePath) {
+		public void ReplaceAssets(in string inputDirectory, in string outputAssetBundlePath) {
 			// Get list of all files in input folder
 			var inputFilePaths = Directory.GetFiles(inputDirectory, "*", SearchOption.TopDirectoryOnly);
 
@@ -73,38 +107,14 @@ namespace UnityAssetReplacer {
 				// Replace the member
 				member.Set(inBytes);
 
-				var newGoBytes = baseField.WriteToByteArray();
-
-				// Add new replacer to list of replacers
-				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-																AssetHelper.GetScriptIndex(_assetsFile.file,
-																assetInfo), newGoBytes);
-				assetReplacers.Add(assetsReplacer);
+				AddReplacer(baseField, assetInfo, ref assetReplacers);
 			}
 
-			// Write changes to the asset bundle
-			byte[] newAssetData;
-
-			using (var stream = new MemoryStream()) {
-				using var writer = new AssetsFileWriter(stream);
-				_assetsFile.file.Write(writer, 0, assetReplacers, 0);
-				writer.Close();
-				stream.Close();
-				newAssetData = stream.ToArray();
-			}
-
-			var bundleReplacer =
-				new BundleReplacerFromMemory(_assetsFile.name, _assetsFile.name, true, newAssetData, -1);
-
-			// Save the new output file
-			var bunWriter = new AssetsFileWriter(File.OpenWrite(outputAssetBundlePath));
-			_assetsBundleFile.file.Write(bunWriter, new List<BundleReplacer> { bundleReplacer });
-			_assetsBundleFile.file.Close();
-			bunWriter.Close();
+			ReplaceInBundle(assetReplacers, outputAssetBundlePath);
 		}
 
 		// Method to dump bytes to a specified path from assets in an asset file with a given member name
-		public void DumpAssets(string dumpPath) {
+		public void DumpAssets(in string dumpPath) {
 			// Create output folder
 			Directory.CreateDirectory(dumpPath);
 
@@ -141,7 +151,7 @@ namespace UnityAssetReplacer {
 		}
 
 		// Read texture data. Copied from nesrak1's UABEA TexturePlugin.
-		private static bool GetResSTexture(TextureFile texFile, AssetsFileInstance inst) {
+		private static bool GetResSTexture(in TextureFile texFile, in AssetsFileInstance inst) {
 			var streamInfo = texFile.m_StreamData;
 			if (string.IsNullOrEmpty(streamInfo.path) || inst.parentBundle == null) return true;
 
@@ -171,7 +181,7 @@ namespace UnityAssetReplacer {
 		}
 
 		// Read texture image bytes. Copied from nesrak1's UABEA TexturePlugin.
-		private static byte[] GetRawTextureBytes(TextureFile texFile, AssetsFileInstance inst) {
+		private static byte[] GetRawTextureBytes(in TextureFile texFile, in AssetsFileInstance inst) {
 			var rootPath = Path.GetDirectoryName(inst.path);
 			if (texFile.m_StreamData.size == 0 || texFile.m_StreamData.path == string.Empty) return texFile.pictureData;
 			var fixedStreamPath = texFile.m_StreamData.path;
@@ -190,7 +200,7 @@ namespace UnityAssetReplacer {
 		}
 
 		// Dump all textures from asset file
-		public void DumpTextures(string dumpPath) {
+		public void DumpTextures(in string dumpPath) {
 			// Create output folder
 			Directory.CreateDirectory(dumpPath);
 
@@ -228,7 +238,7 @@ namespace UnityAssetReplacer {
 		}
 
 		// Replace found textures in files
-		public void ReplaceTextures(string inputDirectory, string outputAssetBundlePath) {
+		public void ReplaceTextures(in string inputDirectory, in string outputAssetBundlePath) {
 			// Get list of all files in input folder
 			var inputFilePaths = Directory.GetFiles(inputDirectory, "*", SearchOption.TopDirectoryOnly);
 
@@ -282,34 +292,9 @@ namespace UnityAssetReplacer {
 				var byteArray = new AssetTypeByteArray { size = (uint)encImageBytes.Length, data = encImageBytes };
 				imageData.GetValue().Set(byteArray);
 
-				var newGoBytes = baseField.WriteToByteArray();
-
-				// Add new replacer to list of replacers
-				var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-																	AssetHelper.GetScriptIndex(_assetsFile.file,
-																		assetInfo), newGoBytes);
-				assetReplacers.Add(assetsReplacer);
+				AddReplacer(baseField, assetInfo, ref assetReplacers);
 			}
-
-			// Write changes to the asset bundle
-			byte[] newAssetData;
-
-			using (var stream = new MemoryStream()) {
-				using var writer = new AssetsFileWriter(stream);
-				_assetsFile.file.Write(writer, 0, assetReplacers, 0);
-				writer.Close();
-				stream.Close();
-				newAssetData = stream.ToArray();
-			}
-
-			var bundleReplacer =
-				new BundleReplacerFromMemory(_assetsFile.name, _assetsFile.name, true, newAssetData, -1);
-
-			// Save the new output file
-			var bunWriter = new AssetsFileWriter(File.OpenWrite(outputAssetBundlePath));
-			_assetsBundleFile.file.Write(bunWriter, new List<BundleReplacer> { bundleReplacer });
-			_assetsBundleFile.file.Close();
-			bunWriter.Close();
+			ReplaceInBundle(assetReplacers, outputAssetBundlePath);
 		}
 	}
 }
