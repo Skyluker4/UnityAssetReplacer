@@ -35,13 +35,15 @@ namespace UnityAssetReplacer {
 			_memberName = memberName;
 
 		// Helper function to add replacer to replacer list
-		private void AddReplacer(in AssetTypeValueField baseField, in AssetFileInfoEx assetInfo, ref List<AssetsReplacer> assetReplacers) {
+		private void AddReplacer(in AssetTypeValueField baseField,
+								 in AssetFileInfoEx assetInfo,
+								 ref List<AssetsReplacer> assetReplacers) {
 			var newGoBytes = baseField.WriteToByteArray();
 
 			// Add new replacer to list of replacers
 			var assetsReplacer = new AssetsReplacerFromMemory(0, assetInfo.index, (int)assetInfo.curFileType,
-			                                                  AssetHelper.GetScriptIndex(_assetsFile.file,
-				                                                  assetInfo), newGoBytes);
+															  AssetHelper.GetScriptIndex(_assetsFile.file, assetInfo),
+															  newGoBytes);
 			assetReplacers.Add(assetsReplacer);
 		}
 
@@ -69,7 +71,9 @@ namespace UnityAssetReplacer {
 		}
 
 		// Helper function to loop through all assets and replace
-		private void ReplaceAll(in string inputDirectory, in string outputAssetBundlePath, Action<List<AssetsReplacer>, string, string> operation) {
+		private void ReplaceAll(in string inputDirectory,
+								in string outputAssetBundlePath,
+								Action<List<AssetsReplacer>, string, string> operation) {
 			// Get list of all files in input folder
 			var inputFilePaths = Directory.GetFiles(inputDirectory, "*", SearchOption.TopDirectoryOnly);
 
@@ -81,7 +85,6 @@ namespace UnityAssetReplacer {
 				// Set name
 				var inputFileName = inputFilePath.Split('/').Last();
 
-
 				operation(assetReplacers, inputFileName, inputFilePath);
 			}
 
@@ -90,8 +93,7 @@ namespace UnityAssetReplacer {
 
 		// Method to replace assets in an asset file given an input directory and an output path
 		public void ReplaceAssets(in string inputDirectory, in string outputAssetBundlePath) {
-			ReplaceAll(inputDirectory, outputAssetBundlePath,(assetReplacers, inputFileName, inputFilePath) => {
-				
+			ReplaceAll(inputDirectory, outputAssetBundlePath, (assetReplacers, inputFileName, inputFilePath) => {
 				// Get specific asset from asset table
 				var assetInfo = _assetsTable.GetAssetInfo(inputFileName);
 				var baseField = _assetsManager.GetTypeInstance(_assetsFile.file, assetInfo).GetBaseField();
@@ -108,10 +110,10 @@ namespace UnityAssetReplacer {
 				if (member is null) {
 					// Print error: Member wasn't found in asset
 					Console.Error.WriteLine("ERROR: Can't read member '" +
-					                        _memberName +
-					                        "' in asset '" +
-					                        inputFileName +
-					                        "'!");
+											_memberName +
+											"' in asset '" +
+											inputFileName +
+											"'!");
 
 					// Go on to next asset
 					return;
@@ -242,8 +244,8 @@ namespace UnityAssetReplacer {
 					continue;
 				}
 
-				_ = TextureImportExport.ExportPng(data, dumpPath + ForwardPathSeparator + assetName + ".png", tf.m_Width, tf.m_Height,
-												(TextureFormat)tf.m_TextureFormat);
+				_ = TextureImportExport.ExportPng(data, dumpPath + ForwardPathSeparator + assetName + ".png",
+												  tf.m_Width, tf.m_Height, (TextureFormat)tf.m_TextureFormat);
 			}
 		}
 
@@ -261,9 +263,9 @@ namespace UnityAssetReplacer {
 				if (assetInfo is null) {
 					// Print error: Asset wasn't found with name
 					Console.Error.WriteLine("ERROR: Can't replace texture '" +
-					                        assetName +
-					                        "'! Make sure texture already exists in the assets file!" +
-					                        "\nQUITTING!");
+											assetName +
+											"'! Make sure texture already exists in the assets file!" +
+											"\nQUITTING!");
 
 					// Quit replacing textures
 					return;
