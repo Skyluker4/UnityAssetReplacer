@@ -10,7 +10,7 @@ using TexturePlugin;
 
 namespace UnityAssetReplacer {
 	public class UnityAssetReplacer {
-		private const string PathSeparator = "/";
+		private const string ForwardPathSeparator = "/";
 
 		private readonly BundleFileInstance _assetsBundleFile;
 		private readonly AssetsFileInstance _assetsFile;
@@ -156,7 +156,7 @@ namespace UnityAssetReplacer {
 				var memberString = memberValue.AsStringBytes();
 
 				// Save the file
-				File.WriteAllBytes(dumpPath + PathSeparator + assetName, memberString);
+				File.WriteAllBytes(dumpPath + ForwardPathSeparator + assetName, memberString);
 			}
 		}
 
@@ -242,7 +242,7 @@ namespace UnityAssetReplacer {
 					continue;
 				}
 
-				_ = TextureImportExport.ExportPng(data, dumpPath + PathSeparator + assetName + ".png", tf.m_Width, tf.m_Height,
+				_ = TextureImportExport.ExportPng(data, dumpPath + ForwardPathSeparator + assetName + ".png", tf.m_Width, tf.m_Height,
 												(TextureFormat)tf.m_TextureFormat);
 			}
 		}
@@ -251,6 +251,9 @@ namespace UnityAssetReplacer {
 		public void ReplaceTextures(in string inputDirectory, in string outputAssetBundlePath) {
 			ReplaceAll(inputDirectory, outputAssetBundlePath, (assetReplacers, inputFileName, inputFilePath) => {
 				var assetName = inputFileName.Replace(".png", "");
+
+				// Remove directory from asset name
+				assetName = assetName.Split("\\").Last();
 
 				// Get specific asset from asset table
 				var assetInfo = _assetsTable.GetAssetInfo(assetName, 0x1C); // 0x1C is texture
