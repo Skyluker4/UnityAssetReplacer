@@ -12,6 +12,7 @@ namespace UnityAssetReplacer {
 	public abstract class Asset {
 		// Constants
 		protected const string ForwardPathSeparator = "/";
+		private const string BackwardPathSeparator = "\\";
 
 		// Asset related member variables
 		protected readonly AssetsFileInstance AssetsFile;
@@ -74,8 +75,8 @@ namespace UnityAssetReplacer {
 
 			// Loop through every asset in input folder and try to open the name
 			foreach (var inputFilePath in inputFilePaths) {
-				// Set name
-				var inputFileName = inputFilePath.Split('/').Last();
+				// Set name and get only filename; no slashes
+				var inputFileName = inputFilePath.Split(ForwardPathSeparator).Last().Split(BackwardPathSeparator).Last();
 
 				operation(assetReplacers, inputFileName, inputFilePath);
 			}
