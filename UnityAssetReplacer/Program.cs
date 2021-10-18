@@ -69,13 +69,13 @@ namespace UnityAssetReplacer {
 
 			// Textures
 			if (Options.Textures) {
-				var uar = new UnityAssetReplacer(Options.InputAssetBundlePath);
+				var uar = new TextureAsset(Options.InputAssetBundlePath);
 
 				RunOperation(uar, dump, replace);
 			}
 			// Raw members
 			else if (Options.Member != null) {
-				var uar = new UnityAssetReplacer(Options.InputAssetBundlePath, Options.Member);
+				var uar = new RawAsset(Options.InputAssetBundlePath, Options.Member);
 
 				RunOperation(uar, dump, replace);
 			}
@@ -86,12 +86,12 @@ namespace UnityAssetReplacer {
 			}
 		}
 
-		private static void RunOperation(UnityAssetReplacer uar, bool dump, bool replace) {
+		private static void RunOperation(Asset uar, bool dump, bool replace) {
 			// Dump
-			if (dump) uar.DumpTextures(Options.DumpPath);
+			if (dump) uar.Dump(Options.DumpPath);
 
 			// Replace
-			if (replace) uar.ReplaceTextures(Options.InputDirectory, Options.OutputAssetBundlePath);
+			if (replace) uar.Replace(Options.InputDirectory, Options.OutputAssetBundlePath);
 		}
 
 		// Function to show user how to ask for more help
