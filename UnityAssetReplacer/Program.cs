@@ -4,96 +4,101 @@ using Mono.Options;
 
 namespace UnityAssetReplacer {
 	internal static class Program {
+		// Arguments
+		private class OptionVariables {
+			public string InputAssetBundlePath;
+			public string Member;
+			public string OutputAssetBundlePath;
+			public string InputDirectory;
+			public string DumpPath;
+			public bool Textures;
+			public bool Help;
+		}
+
+		private static readonly OptionVariables Options = new();
+
+		private static readonly OptionSet OptionParser = new() {
+			{ "b|bundle=", "the original asset {BUNDLE} path", v => Options.InputAssetBundlePath = v },
+			{ "i|input=", "the {INPUT} directory of the assets to overwrite with.", v => Options.InputDirectory = v },
+			{
+				"o|output=",
+				"the path of the asset bundle you wish to {OUTPUT}.",
+				v => Options.OutputAssetBundlePath = v
+			},
+			{ "d|dump=", "the path of the directory you wish to {DUMP} to.", v => Options.DumpPath = v },
+			{ "m|member=", "the {MEMBER} you dump/overwrite.", v => Options.Member = v },
+			{ "t|texture", "Interact with {TEXTURE}s in the asset bundle.", v => Options.Textures = v != null },
+			{ "h|?|help", "show this message for and then exit.", v => Options.Help = v != null }
+		};
+
 		// Entry point
 		public static void Main(string[] args) {
-			// Arguments
-			string inputAssetBundlePath = null;
-			string member = null;
-			string outputAssetBundlePath = null;
-			string inputDirectory = null;
-			string dumpPath = null;
-			var textures = false;
-			var help = false;
-
-			// Instructions
-			var options = new OptionSet {
-				{ "b|bundle=", "the original asset {BUNDLE} path", v => inputAssetBundlePath = v },
-				{ "i|input=", "the {INPUT} directory of the assets to overwrite with.", v => inputDirectory = v },
-				{ "o|output=", "the path of the asset bundle you wish to {OUTPUT}.", v => outputAssetBundlePath = v },
-				{ "d|dump=", "the path of the directory you wish to {DUMP} to.", v => dumpPath = v },
-				{ "m|member=", "the {MEMBER} you dump/overwrite.", v => member = v },
-				{ "t|texture", "Interact with {TEXTURE}s in the asset bundle.", v => textures = v != null },
-				{ "h|?|help", "show this message for and then exit.", v => help = v != null }
-			};
-
 			// Parse arguments
-			try { options.Parse(args); }
+			try { OptionParser.Parse(args); }
 			catch (OptionException e) {
 				Console.WriteLine(e.Message);
-				options.WriteOptionDescriptions(Console.Out);
+				OptionParser.WriteOptionDescriptions(Console.Out);
 				return;
 			}
 
 			// Display help command if specified and then exit
-			if (help) {
-				options.WriteOptionDescriptions(Console.Out);
+			if (Options.Help) {
+				OptionParser.WriteOptionDescriptions(Console.Out);
 				return;
 			}
 
-			// Make sure bundle and member are not null
-			if (inputAssetBundlePath != null) {
-				// Check what can be run
-				var dump = dumpPath != null;
-				var replace = inputDirectory != null && outputAssetBundlePath != null;
+			// ERROR: No input bundle specified
+			if (Options.InputAssetBundlePath == null) {
+				Console.Error.WriteLine("An asset BUNDLE must be specified.");
+				ShowHelp();
+				return;
+			}
 
-				// If nothing can be run, display help message and exit
-				if (!(dump || replace)) {
-					Console.Error.WriteLine("To DUMP, the BUNDLE, MEMBER, and DUMP arguments must be specified.");
-					Console.Error
-						.WriteLine("To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
-					Help();
-					return;
+			// Check what can be run
+			var dump = Options.DumpPath != null;
+			var replace = Options.InputDirectory != null && Options.OutputAssetBundlePath != null;
+
+			// ERROR: Not enough information for operations was specified
+			if (!(dump || replace)) {
+				Console.Error.WriteLine("To DUMP, the BUNDLE, MEMBER, and DUMP arguments must be specified.");
+				Console.Error
+					   .WriteLine("To REPLACE, the BUNDLE, MEMBER, INPUT, and OUTPUT arguments must be specified.");
+				ShowHelp();
+				return;
+			}
+
+			try { // Textures
+				if (Options.Textures) {
+					var uar = new TextureAsset(Options.InputAssetBundlePath);
+
+					RunOperation(uar, dump, replace);
 				}
+				// Raw members
+				else if (Options.Member != null) {
+					var uar = new RawAsset(Options.InputAssetBundlePath, Options.Member);
 
-				// Textures
-				if (textures) {
-					// Initialize
-					var uar = new UnityAssetReplacer(inputAssetBundlePath);
-
-					// Dump
-					if (dump) uar.DumpTextures(dumpPath);
-
-					// Replace
-					if (replace) uar.ReplaceTextures(inputDirectory, outputAssetBundlePath);
+					RunOperation(uar, dump, replace);
 				}
-
-				// Members
-				else if (member != null) {
-					// Initialize
-					var uar = new UnityAssetReplacer(inputAssetBundlePath, member);
-
-					// Dump if arguments are provided
-					if (dump) uar.DumpAssets(dumpPath);
-
-					// Replace
-					if (inputDirectory != null && outputAssetBundlePath != null)
-						uar.ReplaceAssets(inputDirectory, outputAssetBundlePath);
-				}
-
-				// Error - Not enough arguments provided
+				// ERROR: Not enough arguments provided
 				else {
 					Console.Error.WriteLine("A MEMBER must be specified or interact with TEXTURES.");
-					Help();
+					ShowHelp();
 				}
 			}
-			else {
-				Console.Error.WriteLine("An asset BUNDLE must be specified.");
-				Help();
-			}
+			// ERROR: Could not open the file
+			catch (System.IO.IOException) { Console.Error.WriteLine("ERROR: Could not open the asset bundle!"); }
+		}
+
+		private static void RunOperation(Asset uar, bool dump, bool replace) {
+			// Dump
+			if (dump) uar.Dump(Options.DumpPath);
+
+			// Replace
+			if (replace) uar.Replace(Options.InputDirectory, Options.OutputAssetBundlePath);
 		}
 
 		// Function to show user how to ask for more help
-		private static void Help() {
+		private static void ShowHelp() {
 			Console.Error.WriteLine("Try `" + AppDomain.CurrentDomain.FriendlyName + " --help' for more information.");
 		}
 	}
