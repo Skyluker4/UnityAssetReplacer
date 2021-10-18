@@ -1,3 +1,5 @@
 restylers:
+  - astyle:
+      enabled: false
   - "*"
   - dotnet-format
