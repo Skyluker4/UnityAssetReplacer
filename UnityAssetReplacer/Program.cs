@@ -67,23 +67,26 @@ namespace UnityAssetReplacer {
 				return;
 			}
 
-			// Textures
-			if (Options.Textures) {
-				var uar = new TextureAsset(Options.InputAssetBundlePath);
+			try { // Textures
+				if (Options.Textures) {
+					var uar = new TextureAsset(Options.InputAssetBundlePath);
 
-				RunOperation(uar, dump, replace);
-			}
-			// Raw members
-			else if (Options.Member != null) {
-				var uar = new RawAsset(Options.InputAssetBundlePath, Options.Member);
+					RunOperation(uar, dump, replace);
+				}
+				// Raw members
+				else if (Options.Member != null) {
+					var uar = new RawAsset(Options.InputAssetBundlePath, Options.Member);
 
-				RunOperation(uar, dump, replace);
+					RunOperation(uar, dump, replace);
+				}
+				// ERROR: Not enough arguments provided
+				else {
+					Console.Error.WriteLine("A MEMBER must be specified or interact with TEXTURES.");
+					ShowHelp();
+				}
 			}
-			// ERROR: Not enough arguments provided
-			else {
-				Console.Error.WriteLine("A MEMBER must be specified or interact with TEXTURES.");
-				ShowHelp();
-			}
+			// ERROR: Could not open the file
+			catch (System.IO.IOException) { Console.Error.WriteLine("ERROR: Could not open the asset bundle!"); }
 		}
 
 		private static void RunOperation(Asset uar, bool dump, bool replace) {
