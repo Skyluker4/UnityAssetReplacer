@@ -1,20 +1,10 @@
 using System;
+using System.IO;
 
 using Mono.Options;
 
 namespace UnityAssetReplacer {
 	internal static class Program {
-		// Arguments
-		private class OptionVariables {
-			public string InputAssetBundlePath;
-			public string Member;
-			public string OutputAssetBundlePath;
-			public string InputDirectory;
-			public string DumpPath;
-			public bool Textures;
-			public bool Help;
-		}
-
 		private static readonly OptionVariables Options = new();
 
 		private static readonly OptionSet OptionParser = new() {
@@ -86,7 +76,7 @@ namespace UnityAssetReplacer {
 				}
 			}
 			// ERROR: Could not open the file
-			catch (System.IO.IOException) { Console.Error.WriteLine("ERROR: Could not open the asset bundle!"); }
+			catch (IOException) { Console.Error.WriteLine("ERROR: Could not open the asset bundle!"); }
 		}
 
 		private static void RunOperation(Asset uar, bool dump, bool replace) {
@@ -100,6 +90,17 @@ namespace UnityAssetReplacer {
 		// Function to show user how to ask for more help
 		private static void ShowHelp() {
 			Console.Error.WriteLine("Try `" + AppDomain.CurrentDomain.FriendlyName + " --help' for more information.");
+		}
+
+		// Arguments
+		private class OptionVariables {
+			public string DumpPath;
+			public bool Help;
+			public string InputAssetBundlePath;
+			public string InputDirectory;
+			public string Member;
+			public string OutputAssetBundlePath;
+			public bool Textures;
 		}
 	}
 }
