@@ -1,0 +1,8 @@
+---
+restylers:
+  - astyle:
+    enabled: false
+  - clang-format:
+    enabled: false
+  - "*"
+  - dotnet-format
