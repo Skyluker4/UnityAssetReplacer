@@ -18,6 +18,7 @@ To replace/import assets, you need to specify the path where the assets to impor
 - ```-h```, ```-?```, ```--help```: show the help message and then exit.
 - ```-b```, ```--bundle=BUNDLE```: the original asset bundle path you want to read from.
 - ```-m```, ```--member=MEMBER```: the member to dump or replace.
+- ```-t```, ```--texture```: will deal with textures instead of members. Uses PNG the format.
 
 #### Dumping
 
