@@ -8,10 +8,12 @@ A tool to dump or replace assets in a Unity asset bundle.
 
 ## Usage
 
-This program always requires a **decompressed** Unity asset bundle. Use [Unity Assets Bundle Extractor Avalonia (UABEA)](https://github.com/nesrak1/UABEA) to decompress an asset bundle if it's compressed.
-It also always requires the name of the ```member``` (A.K.A. field) you'd like interact with in the asset bundle (ex. ```m_Name```).
+This program requires an **uncompressed** Unity asset bundle. Use [Unity Assets Bundle Extractor Avalonia (UABEA)](https://github.com/nesrak1/UABEA) to decompress an asset bundle if it's compressed.
+It also requires the name of the ```member``` (the **field** of an object in the assets file, **NOT** the game object itself) you'd like interact with in the asset bundle (ex. ```m_Name```), except for when you are dealing with textures.
+The best way to find members/fields for an object is to open the asset bundle in [UABEA](https://github.com/nesrak1/UABEA) or a similar tool, then open the asset file and then the object, where you'll find a list of all members for that object.
 To extract, you also need to set the path of where you'd like to dump to.
-To replace/import assets, you need to specify the path where the assets to import are and the name of the new asset bundle you're exporting. The files inside of the directory must match the asset names **exactly** in order to be imported.
+
+To replace assets, you need to specify the path where the assets to import are and the name of the new asset bundle you're exporting. The files inside of the directory must match the asset names **exactly** in order to be imported.
 
 ### Arguments
 
@@ -31,10 +33,14 @@ To replace/import assets, you need to specify the path where the assets to impor
 
 ### Examples
 
-- Dump all assets from ```assetBundle.bun``` with member ```m_Script``` to ```extracted/```:
-  - ```UnityAssetReplacer -b assetBundle.bun -m m_Script -d extracted```
-- Replace all assets from ```assetBundle.bun``` with member ```m_Script```, reading from ```newAssets/```, to ```newAssetBundle.bun```:
+- Dump all assets from ```assetBundle.bun``` with member ```m_Script``` to ```extractedAssets/```:
+  - ```UnityAssetReplacer -b assetBundle.bun -m m_Script -d extractedAssets```
+- Replace assets in ```assetBundle.bun``` with member ```m_Script```, reading from ```newAssets/```, to ```newAssetBundle.bun```:
   - ```UnityAssetReplacer -b assetBundle.bun -m m_Script -i newAssets -o newAssetBundle.bun```
+- Dump all textures from ```assetBundle.bun``` to ```extractedTextures/```:
+  - ```UnityAssetReplacer -b assetBundle.bun -t -d extractedTextures```
+- Replace textures in ```assetBundle.bun```, reading from ```newTextures/```, to ```newAssetBundle.bun```:
+  - ```UnityAssetReplacer -b assetBundle.bun -t -i newTextures -o newAssetBundle.bun```
 
 ## Building
 
