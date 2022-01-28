@@ -43,7 +43,7 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="AssetsTools.NET">
-      <Version>2.0.9</Version>
+      <Version>2.0.10</Version>
     </PackageReference>
     <PackageReference Include="Mono.Options">
       <Version>6.12.0.148</Version>
