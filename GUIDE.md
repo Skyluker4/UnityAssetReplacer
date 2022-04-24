@@ -69,7 +69,7 @@ The new asset bundle will be called whatever you specified, but for usage in the
 
 https://user-images.githubusercontent.com/10624379/164995749-40c29bcf-1c83-4eeb-9357-048f14e72b72.mp4
 
-Finally, we make sure that the specified member of the assets are replaced successfully. Then the older asset bundles are delted and the modified one is renamed to the original name. All the extraction folders are modified folders can be deleted as well.
+Finally, we make sure that the specified member of the assets are replaced successfully. Then the older asset bundles are deleted and the modified one is renamed to the original name. All the extraction folders are modified folders can be deleted as well.
 
 The modified asset bundle is not compressed, but it does not need to be. If you would like to compress it after, you can use UABE to do so.
 
