@@ -16,7 +16,7 @@ This section is for dumping/replacing single raw data/text sections in assets.
 
 ### 1. Decompress and View Assets
 
-https://user-images.githubusercontent.com/10624379/164995881-4090c5f9-6087-45c5-ad9a-19c3ef1b582b.mp4
+https://user-images.githubusercontent.com/10624379/165003397-ade6a98e-7541-4cab-87ab-8bcda77d361f.mp4
 
 First, you need to identify what you are trying to modify.
 Usually a search for the string you are trying to modify in the game files will turn up the correct file/asset bundle you are looking for.
@@ -29,7 +29,7 @@ In this example, we found that `m_Script` from inside the assets is what needed 
 
 ### 2. Dump Text and View Output
 
-https://user-images.githubusercontent.com/10624379/164995659-292970e9-f27d-47af-b96b-610b87d48453.mp4
+https://user-images.githubusercontent.com/10624379/165003489-dbc018d7-1e34-4767-8864-5460f4d6ca7f.mp4
 
 Next, you need to dump all of the assets with that specific member. UAR will only ouput the one member of that asset, creating a new file for each asset in the specified output directory.
 In the directory will be the name of each asset (extracted from the member `m_Name`) with its data being whatever data was the specified member (`m_Script` in this case).
@@ -45,7 +45,7 @@ The files that it outputs are the raw data of that member of the assets. Luckily
 
 ### 3. Modify Assets
 
-https://user-images.githubusercontent.com/10624379/164995679-01493509-6f93-4721-a2f4-19a3104456f1.mp4
+https://user-images.githubusercontent.com/10624379/165003601-da4f7462-70b9-475f-a611-70e93693f5f2.mp4
 
 In this video, we can see that the assets were copied to another folder and modified to have translated text.
 Notice that the filenames are the same as before (no file extensions added) and only the data inside of them has changed.
@@ -54,7 +54,7 @@ These will be the files that we use to modify the asset bundle.
 
 ### 4. Replace Assets
 
-https://user-images.githubusercontent.com/10624379/164995724-71079e45-6565-4916-8ca5-6759970bdef5.mp4
+https://user-images.githubusercontent.com/10624379/165003674-93957fda-b9bc-4338-bbf8-210ba3ae7963.mp4
 
 To replace the assets run:
 `./UnityAssetReplacer -b "uncompressed_asset_bundle" -o "modififed_asset_bundle" -i "modified_assets"`
@@ -67,7 +67,7 @@ The new asset bundle will be called whatever you specified, but for usage in the
 
 ### 5. Verify Modified Assets
 
-https://user-images.githubusercontent.com/10624379/164995749-40c29bcf-1c83-4eeb-9357-048f14e72b72.mp4
+https://user-images.githubusercontent.com/10624379/165003761-1c1f424e-eadb-466a-8d00-6df50792338c.mp4
 
 Finally, we make sure that the specified member of the assets are replaced successfully. Then the older asset bundles are deleted and the modified one is renamed to the original name. All the extraction folders are modified folders can be deleted as well.
 
@@ -77,7 +77,7 @@ The modified asset bundle is not compressed, but it does not need to be. If you 
 
 ### 1. Decompress and View Asset List
 
-https://user-images.githubusercontent.com/10624379/164995890-39e403a0-735f-4c8c-aaa2-395513cb5b98.mp4
+https://user-images.githubusercontent.com/10624379/165003830-c1a6c255-cc72-4abb-9e69-1c1e8e86484c.mp4
 
 To find which asset bundle to modify, try looking for large asset bundles and names that would be fitting to hold textures (like `ui`).
 
@@ -87,7 +87,7 @@ Make sure that the assets file contains `Texture2D` asset types, since these are
 
 ### 2. Dump Textures
 
-https://user-images.githubusercontent.com/10624379/164995893-8ecc2547-b6bc-4ce6-aa0c-5b126ce7d69c.mp4
+https://user-images.githubusercontent.com/10624379/165003948-dfb085b8-4b5f-491a-8c24-504bc8f0b3a8.mp4
 
 The textures can be dumped by using (this may take a few minutes):
 `./UnityAssetReplacer -b "uncompressed_bundle_file" -t -d "dumped_textures_folder"`
@@ -102,7 +102,7 @@ From here, modify the textures to your liking, but don't change their names.
 
 ### 4. Replace Textures
 
-https://user-images.githubusercontent.com/10624379/164995907-bafae651-21f2-4401-b72a-776d9a207c8e.mp4
+https://user-images.githubusercontent.com/10624379/165004078-ebb9ccc8-6e86-44a8-bf5b-ed6f8d4e881f.mp4
 
 Finally, to replace the textures, run (this may take a few minutes and some memory):
 `./UnityAssetReplacer -b "uncompressed_bundle_file" -t -i "modified_textures_folder" -o "modified_bundle_file"`
