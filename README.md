@@ -15,6 +15,8 @@ To extract, you also need to set the path of where you'd like to dump to.
 
 To replace assets, you need to specify the path where the assets to import are and the name of the new asset bundle you're exporting. The files inside of the directory must match the asset names **exactly** in order to be imported.
 
+For a more in-depth tutorial, check out the [guide](GUIDE.md).
+
 ### Arguments
 
 - ```-h```, ```-?```, ```--help```: show the help message and then exit.
@@ -41,6 +43,8 @@ To replace assets, you need to specify the path where the assets to import are a
   - ```UnityAssetReplacer -b assetBundle.bun -t -d extractedTextures```
 - Replace textures in ```assetBundle.bun```, reading from ```newTextures/```, to ```newAssetBundle.bun```:
   - ```UnityAssetReplacer -b assetBundle.bun -t -i newTextures -o newAssetBundle.bun```
+
+See the [guide](GUIDE.md) for how it is used in action.
 
 ## Building
 
