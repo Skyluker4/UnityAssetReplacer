@@ -7,13 +7,14 @@ on:
   workflow_dispatch:
 
 jobs:
-  Build:
+  Build-Unix:
+    name: Build Unix
     runs-on: ubuntu-latest
 
     strategy:
       fail-fast: false
       matrix:
-        platform: [win-x86, win-x64, linux-x64, osx-x64]
+        platform: [linux-x64, osx-x64]
 
     steps:
       - name: Checkout Repository
@@ -34,6 +35,45 @@ jobs:
 
       - name: Copy README.md
         run: cp README.md UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/README.md
+
+      - name: Upload Package
+        uses: actions/upload-artifact@main
+        with:
+          name: UnityAssetReplacer-${{matrix.platform}}-${{github.sha}}.zip
+          path: UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/
+          if-no-files-found: error
+
+  Build-Windows:
+    name: Build Windows
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        platform: [win-x86, win-x64]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@main
+        with:
+          submodules: recursive
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@main
+        with:
+          dotnet-version: 5.0.x
+
+      - name: Build
+        shell: cmd
+        run: |
+          "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/Tools/VsDevCmd.bat"
+          dotnet publish -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release -r ${{matrix.platform}}
+
+      - name: Copy LICENSE
+        run: cp LICENSE bin/Release/net5.0/${{matrix.platform}}/publish/LICENSE
+
+      - name: Copy README.md
+        run: cp README.md bin/Release/net5.0/${{matrix.platform}}/publish/README.md
 
       - name: Upload Package
         uses: actions/upload-artifact@main
