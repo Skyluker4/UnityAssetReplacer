@@ -64,7 +64,10 @@ jobs:
           dotnet-version: 5.0.x
 
       - name: Build
-        run: dotnet publish -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release -r ${{matrix.platform}}
+        shell: cmd
+        run: |
+          "C:/Program Files/Microsoft Visual Studio/2022/Enterprise/Common7/Tools/VsDevCmd.bat"
+          dotnet publish -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release -r ${{matrix.platform}}
 
       - name: Copy LICENSE
         run: cp LICENSE UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/LICENSE
