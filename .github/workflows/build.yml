@@ -70,10 +70,10 @@ jobs:
           dotnet publish -p:IncludeNativeLibrariesForSelfExtract=true -p:DebugType=None -c Release -r ${{matrix.platform}}
 
       - name: Copy LICENSE
-        run: cp LICENSE UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/LICENSE
+        run: cp LICENSE bin/Release/net5.0/${{matrix.platform}}/publish/LICENSE
 
       - name: Copy README.md
-        run: cp README.md UnityAssetReplacer/bin/Release/net5.0/${{matrix.platform}}/publish/README.md
+        run: cp README.md bin/Release/net5.0/${{matrix.platform}}/publish/README.md
 
       - name: Upload Package
         uses: actions/upload-artifact@main
